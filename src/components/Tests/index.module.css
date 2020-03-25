@@ -1,0 +1,55 @@
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr ;
+  padding: 20px;
+  column-gap: 20px;
+  row-gap: 20px;
+  grid-template-rows: 1fr;
+}
+.test {
+    border-radius: 5px;
+    box-shadow: 0 2px 4px #bbb;
+    padding: 10px;
+}
+.test .title {
+    font-weight: bold;
+}
+
+.test .time {
+    color: grey;
+}
+h1 {
+    margin: 20px;
+}
+button {
+    background: #112233;
+    color: white;
+    border: 1px solid #123;
+    border-radius: 3px;
+    margin-top: 10px;
+}
+button:hover {
+    background: #012;
+}
+button.createtest {
+    padding: 10px;
+    margin: 20px;
+}
+.modal {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: #000c;
+    margin: 0;
+    top:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card {
+    background: white;
+    height: fit-content;
+    padding: 20px;
+    width: 40%;
+    border-radius: 5px;
+}

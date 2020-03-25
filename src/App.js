@@ -1,19 +1,24 @@
-import React from 'react'
-import './App.css'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-import Navigation from './components/Navigation'
-import { SignIn } from './components/Auth'
-import ROUTES from './routes'
-import {withAuthentication} from './components/Session'
-import Creator, { CreatorWorks } from './components/Creator'
+import React from "react";
+import "./App.css";
+import { Router } from "@reach/router";
+import Navigation from "./components/Navigation";
+import { SignIn } from "./components/Auth";
+import Home from "./components/Home";
+import Tests from "./components/Tests";
+import { AuthUserContext, withAuthentication } from "./components/Session";
+import Creator, { CreatorWorks } from "./components/Creator";
 
-const App = () => (
-  <Router>
+const App = ({ firebase }) => (
+  <AuthUserContext.Provider value={firebase.auth.currentUser}>
     <Navigation />
-    <Route path={ROUTES.SIGNIN} exact component={SignIn} />
-    <Route path={ROUTES.CREATOR} exact component={Creator} />
-    <Route path={ROUTES.CREATORWORKS} exact component={CreatorWorks} />
-  </Router>
-)
+    <Router className="router">
+      <Home path="/" />
+      <SignIn path="signin" />
+      <Tests path="tests" />
+      <Creator path="tests/:testId" />
+      <CreatorWorks path="results" />
+    </Router>
+  </AuthUserContext.Provider>
+);
 
-export default withAuthentication(App)
+export default withAuthentication(App);

@@ -1,55 +1,60 @@
-import React from 'react'
-import {withFirebase} from '../Firebase'
-import {withRouter} from 'react-router-dom'
-import ROUTES from '../../routes'
+import React from "react";
+import { withFirebase, FirebaseContext } from "../Firebase";
+import { navigate } from "@reach/router";
+import ROUTES from "../../routes";
 
 const AuthUserContext = React.createContext(null);
 
 export const withAuthentication = Component => {
-    class WithAuthentication extends React.Component {
-        constructor(props) {
-          super(props)
-          this.state = {authUser: null}
-        }
-        componentDidMount() {
-          this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
-              authUser
-                  ? this.setState({authUser})
-                  : this.setState({authUser: null})
-          })
-        }
-        componentWillUnmount() {
-            this.listener()
-        }
-        render(){
-            return (
-                <AuthUserContext.Provider value={this.state.authUser}>
-                    <Component {...this.props} />
-                </AuthUserContext.Provider>
-            )
-        }
+  class WithAuthentication extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { authUser: props.firebase.auth.currentUser };
     }
-    return withFirebase(WithAuthentication)
-}
-
-export const withAuthorization = condition => Component => {
-    class WithAuthorization extends React.Component {
-        componentDidMount(){
-            this.listener = this.props.firebase.auth.onAuthStateChanged(
-                authUser => {
-                    if(!condition(authUser)) {
-                        this.props.history.push(ROUTES.SIGNIN)
-                    }
-            })
-        }
-        componentWillUnmount(){
-            this.listener()
-        }
-        render() {
-            return <Component {...this.props} />
-        }
+    componentDidMount() {
+      this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
+        authUser
+          ? this.setState({ authUser })
+          : this.setState({ authUser: null });
+      });
     }
-    return withRouter(withFirebase(WithAuthorization))
-}
+    componentWillUnmount() {
+      this.listener();
+    }
+    render() {
+      return (
+        <FirebaseContext.Consumer>
+          {authUser => <Component {...this.props} authUser={authUser} />}
+        </FirebaseContext.Consumer>
+      );
+    }
+  }
+  return withFirebase(WithAuthentication);
+};
 
-export default AuthUserContext
+export const withAuthorization = (condition, to = ROUTES.SIGNIN) => Component => {
+  class WithAuthorization extends React.Component {
+    componentDidMount() {
+      this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
+        if (!condition(authUser)) {
+          navigate(to);
+        }
+      });
+    }
+    componentWillUnmount() {
+      this.listener();
+    }
+    render() {
+      return (
+        <AuthUserContext.Consumer>
+          {authUser =>
+            condition(authUser) ? <Component {...this.props} /> : null
+          }
+        </AuthUserContext.Consumer>
+      );
+    }
+  }
+  return withFirebase(WithAuthorization);
+};
+
+export default AuthUserContext;

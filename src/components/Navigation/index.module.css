@@ -1,0 +1,38 @@
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #112233;
+  height: 60px;
+  position: sticky;
+  left: 0;
+  right: 0;
+  top: 0;
+  box-shadow: 0 2px 2px #234;
+  padding: 20px;
+}
+ul {
+  margin: 0;
+  list-style-type: none;
+}
+.brand,
+.brand:hover {
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  text-decoration: none;
+}
+li,
+li:hover {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0 !important;
+}
+li:hover {
+  border-bottom: 2px solid white;
+}
+.brand:hover {
+  color: #ccc;
+}

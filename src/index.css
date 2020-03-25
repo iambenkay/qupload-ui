@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Sen&display=swap");
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -6,18 +8,23 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  background: #f8f8f8;
+  background: #f2f2f2;
+  height: 100%;
 }
-
-.slider {
-  width: 3100px;
+html {
+  height: 100%;
 }
-
+#root {
+  height: 100%;
+}
+.router {
+  height: calc(100% - 60px);
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
 * {
-  font-family: "Sawasdee";
+  font-family: "Sen", sans-serif;
 }
