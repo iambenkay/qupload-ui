@@ -16,7 +16,10 @@ export default withFirebase(({ firebase }) => (
         {firebase.auth.currentUser ? (
           <SignOut />
         ) : (
-          <li onClick={() => navigate(ROUTES.SIGNIN)}>SIGN IN</li>
+          <>
+            <li onClick={() => navigate(ROUTES.SIGNIN)}>SIGN IN</li>
+            <li onClick={() => navigate("/signup")}>SIGN UP</li>
+          </>
         )}
       </ul>
     </nav>

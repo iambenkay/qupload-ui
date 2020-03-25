@@ -14,24 +14,37 @@ import { withAuthorization } from "../Session";
 const INITIAL_SIGNIN_STATE = {
   email: "",
   password: "",
+  name: "",
+  cpassword: "",
   error: null,
   loading: false
 };
 
-class SignIn extends React.Component {
+class SignUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_SIGNIN_STATE };
   }
   onSubmit = event => {
+    event.preventDefault();
     this.setState({ loading: true });
-    const { email, password } = this.state;
+    const { email, password, cpassword, name } = this.state;
 
+    if (password !== cpassword) {
+      this.setState({
+        error: { message: "Passwords do not match" },
+        loading: false
+      });
+      return;
+    }
     this.props.firebase
-      .authenticateUser(email, password)
-      .then(() => {
+      .createUser(email, password)
+      .then(authUser => {
+        this.props.firebase
+          .db(`users/${authUser.user.uid}`)
+          .set({ name, email });
         this.setState({ ...INITIAL_SIGNIN_STATE });
-        navigate(ROUTES.HOME);
+        navigate(ROUTES.SIGNIN);
       })
       .catch(error => {
         this.setState({ error });
@@ -39,19 +52,29 @@ class SignIn extends React.Component {
       .finally(() => {
         this.setState({ loading: false });
       });
-    event.preventDefault();
   };
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
   render() {
-    const { email, password, error, loading } = this.state;
+    const { email, password, cpassword, name, error, loading } = this.state;
     const isInvalid = password === "" || email === "" || loading;
     return (
-      <Container style={{paddingTop: "50px"}}>
+      <Container style={{ paddingTop: "50px" }}>
         <Col xs={12} md={5} className="mx-md-auto">
-          <h2 style={{textAlign: "center"}}>SIGN IN</h2>
+          <h2 style={{ textAlign: "center" }}>SIGN UP</h2>
           <form onSubmit={this.onSubmit}>
+            <FormGroup>
+              <FormLabel htmlFor="name">Full name</FormLabel>
+              <FormControl
+                id="name"
+                name="name"
+                value={name}
+                onChange={this.onChange}
+                type="text"
+                placeholder="Enter full name"
+              />
+            </FormGroup>
             <FormGroup>
               <FormLabel htmlFor="email">Email address</FormLabel>
               <FormControl
@@ -72,6 +95,17 @@ class SignIn extends React.Component {
                 onChange={this.onChange}
                 type="password"
                 placeholder="Enter password"
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormLabel htmlFor="cpassword">Confirm Password</FormLabel>
+              <FormControl
+                id="cpassword"
+                name="cpassword"
+                value={cpassword}
+                onChange={this.onChange}
+                type="password"
+                placeholder="Re-Enter password"
               />
             </FormGroup>
             <button disabled={isInvalid} className="mt-4 btn btn-dark">
@@ -97,4 +131,4 @@ class SignIn extends React.Component {
   }
 }
 
-export default withAuthorization(authUser => !authUser, "/")(SignIn);
+export default withAuthorization(authUser => !authUser, "/")(SignUp);

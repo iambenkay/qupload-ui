@@ -23,7 +23,9 @@ ul {
 }
 li,
 li:hover {
+  display: inline;
   color: white;
+  margin: 10px;
   font-weight: bold;
   text-decoration: none;
   cursor: pointer;
