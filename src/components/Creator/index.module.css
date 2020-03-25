@@ -8,7 +8,11 @@ main > div:first-child {
 }
 main > div:last-child {
   flex: 0.7;
-  position: static;
+  position: relative;
+}
+.back,
+.back:hover {
+  color: white;
 }
 .questions {
   display: grid;

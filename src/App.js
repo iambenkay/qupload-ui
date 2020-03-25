@@ -5,8 +5,9 @@ import Navigation from "./components/Navigation";
 import { SignIn } from "./components/Auth";
 import Home from "./components/Home";
 import Tests from "./components/Tests";
+import Results from "./components/Results";
 import { AuthUserContext, withAuthentication } from "./components/Session";
-import Creator, { CreatorWorks } from "./components/Creator";
+import Creator from "./components/Creator";
 
 const App = ({ firebase }) => (
   <AuthUserContext.Provider value={firebase.auth.currentUser}>
@@ -16,7 +17,7 @@ const App = ({ firebase }) => (
       <SignIn path="signin" />
       <Tests path="tests" />
       <Creator path="tests/:testId" />
-      <CreatorWorks path="results" />
+      <Results path="results" />
     </Router>
   </AuthUserContext.Provider>
 );

@@ -48,8 +48,9 @@ class SignIn extends React.Component {
     const { email, password, error, loading } = this.state;
     const isInvalid = password === "" || email === "" || loading;
     return (
-      <Container>
+      <Container style={{paddingTop: "100px"}}>
         <Col xs={12} md={5} className="mx-md-auto">
+          <h2 style={{textAlign: "center"}}>SIGN IN</h2>
           <form onSubmit={this.onSubmit}>
             <FormGroup>
               <FormLabel htmlFor="email">Email address</FormLabel>

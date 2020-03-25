@@ -10,7 +10,7 @@ class Home extends React.Component {
       <>
         <div className={styles.dashboard}>
           <Card data="Tests" to={ROUTES.MANAGETESTS} />
-          <Card data="Results" to={ROUTES.MANAGETESTS} />
+          <Card data="Results" to="/results" />
         </div>
       </>
     );

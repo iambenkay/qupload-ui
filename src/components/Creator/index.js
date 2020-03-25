@@ -2,7 +2,7 @@ import React from "react";
 import CreatorWorks from "./works";
 import { withAuthorization } from "../Session";
 import styles from "./index.module.css";
-import { navigate } from "@reach/router";
+import { navigate, Link } from "@reach/router";
 
 class Creator extends React.Component {
   constructor(props) {
@@ -17,9 +17,6 @@ class Creator extends React.Component {
       submitting: false
     };
   }
-  updateState = state => {
-    this.setState(state);
-  };
   componentDidMount() {
     this.props.firebase.tests().once("value", snapshot => {
       const data = snapshot.val();
@@ -37,8 +34,21 @@ class Creator extends React.Component {
           total: data[test].total
         });
       else navigate("/tests");
+      this.props.firebase
+        .tests(`${this.state.testName}/body/${1}`)
+        .once("value", snapshot => {
+          this.setState({ questionData: snapshot.val() || this.emptyQData });
+        });
     });
   }
+  emptyQData = {
+    question: "",
+    answer0: "",
+    answer1: "",
+    answer2: "",
+    answer3: "",
+    correctAnswer: ""
+  };
   renderQUestionBookmarks = () =>
     Array.from({ length: this.state.total }).map((x, i) => (
       <div
@@ -50,7 +60,7 @@ class Creator extends React.Component {
           this.props.firebase
             .tests(`${this.state.testName}/body/${i + 1}`)
             .once("value", snapshot => {
-              this.setState({ questionData: snapshot.val() });
+              this.setState({ questionData: snapshot.val() || this.emptyQData });
             });
         }}
       >
@@ -61,7 +71,14 @@ class Creator extends React.Component {
     const { questionData, authorized } = this.state;
     return authorized ? (
       <main>
-        <div className={styles.questions}>{this.renderQUestionBookmarks()}</div>
+        <div>
+          <Link to="/tests" className={styles.back}>
+            GO BACK
+          </Link>
+          <div className={styles.questions}>
+            {this.renderQUestionBookmarks()}
+          </div>
+        </div>
         <div>
           {questionData ? (
             <QuestionPane
@@ -86,18 +103,33 @@ const Loader = () => <div className={styles.loader}></div>;
 class QuestionPane extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { ...props.questionData };
+    this.state = { ...props.questionData, submitting: false };
   }
   update = () => {
-    this.props.setter({ submitting: true });
+    const {
+      answer0,
+      answer1,
+      answer2,
+      answer3,
+      correctAnswer,
+      question
+    } = this.state;
+    this.setState({ submitting: true });
     console.log(this.props.name);
-    this.props.firebase.tests(`${this.props.name}/body`).update({
-      [this.props.qno]: {
-        ...this.props.questionData
-      }
-    }).then(() => {
-      this.props.setter({ submitting: false });
-    });
+    this.props.firebase
+      .tests(`${this.props.name}/body`)
+      .child(this.props.qno)
+      .update({
+        answer0,
+        answer1,
+        answer2,
+        answer3,
+        correctAnswer,
+        question
+      })
+      .then(() => {
+        this.setState({ submitting: false });
+      });
   };
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
@@ -109,7 +141,8 @@ class QuestionPane extends React.Component {
       answer2,
       answer3,
       question,
-      correctAnswer
+      correctAnswer,
+      submitting
     } = this.state;
     const isInvalid =
       !answer0 ||
@@ -118,7 +151,9 @@ class QuestionPane extends React.Component {
       !answer3 ||
       !correctAnswer ||
       !question;
-    return (
+    return submitting ? (
+      <Loader />
+    ) : (
       <>
         <div className={styles.questionnav}>
           <h2>Question {this.props.qno}</h2>

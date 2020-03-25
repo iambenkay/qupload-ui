@@ -11,15 +11,18 @@
     box-shadow: 0 2px 4px #bbb;
     padding: 10px;
 }
-.table {
-    margin: 40px;
-}
 .test .title {
     font-weight: bold;
 }
-
+h3 {
+    text-align: cebter;
+}
 .test .time {
     color: grey;
+}
+.table {
+    padding: 40px;
+    text-align: center;
 }
 h1 {
     margin: 20px;

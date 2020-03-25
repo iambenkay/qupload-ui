@@ -26,5 +26,6 @@ export default class Firebase {
   resetUserPassword = email => this.auth.sendPasswordResetEmail(email);
 
   /* DATA ACCESS API */
-  tests = (key = null) => this.db.ref(`Exams/liveExams/${key ? key: ""}`);
+  tests = (path = null) => this.db.ref(`Exams/liveExams/${path ? path: ""}`);
+  results = (path = null) => this.db.ref(`ResultForView/${path ? path: ""}`);
 }
